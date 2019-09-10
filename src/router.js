@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Register from './components/register.vue'
 import Withdraw from './components/withdraw.vue'
+import MedicalRecord from './components/MedicalRecord.vue'
 import Charge from './components/charge.vue'
 import Dispense from './components/dispense.vue'
 import Login from './Login.vue'
@@ -52,6 +53,13 @@ export default new Router({
             meta: {
                 requireAuth: true
             }
+        }, {
+            path: 'medicalRecord',
+            name: '门诊病历',
+            component: MedicalRecord,
+            meta: {
+                requireAuth: true
+            },
         }]
     }]
 })
