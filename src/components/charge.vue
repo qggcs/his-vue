@@ -115,7 +115,7 @@ import Axios from "axios";
 export default {
   data() {
     return {
-      user: JSON.parse(localStorage.getItem("user")),
+      user: JSON.parse(sessionStorage.getItem("user")),
       records: [],
       medicalRecordNumber: "",
       name: "",

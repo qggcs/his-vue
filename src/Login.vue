@@ -42,10 +42,10 @@ export default {
         if (data.status == 500) {
           this.msgOpen(500, data.msg);
         } else {
-          localStorage.removeItem("user");
-          localStorage.removeItem("online");
-          localStorage.setItem("user", JSON.stringify(data.obj));
-          localStorage.setItem("online", true);
+          sessionStorage.removeItem("user");
+          sessionStorage.removeItem("online");
+          sessionStorage.setItem("user", JSON.stringify(data.obj));
+          sessionStorage.setItem("online", true);
           this.msgOpen(200, data.msg);
           this.$router.push({
             path: "/home"

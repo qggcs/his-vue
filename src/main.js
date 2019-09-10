@@ -25,7 +25,7 @@ axios.defaults.baseURL = '/api'
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-    if (localStorage.getItem("online")) {
+    if (sessionStorage.getItem("online")) {
       next();
     } else {
       next({
@@ -37,7 +37,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.fullPath === '/') {
-    if (localStorage.getItem('online')) {
+    if (sessionStorage.getItem('online')) {
       next({
         path: from.fullPath
       });
