@@ -27,7 +27,7 @@
     <br />
     <br />
     <br />
-    <el-button type="primary" icon="el-icon-success">发药</el-button>
+    <el-button type="primary" icon="el-icon-success" @click="dispense">发药</el-button>
     <el-divider></el-divider>
     <el-table
       style="width:100%"
@@ -113,6 +113,42 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    dispense() {
+      request({
+        url: "/dispense",
+        method: "get",
+        params: {
+          details: this.details
+        }
+      }).then(res => {
+        this.msgOpen(res.data.status, res.data.msg);
+      });
+    },
+    msgOpen(status, msg) {
+      if (status == 200) {
+        this.$message({
+          showClose: true,
+          message: msg,
+          type: "success"
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          message: msg,
+          type: "error"
+        });
+      }
+    }
+  },
+  computed: {
+    details: function() {
+      var tmp = this.multipleSelection;
+      var _details = [];
+      tmp.forEach(item => {
+        _details.push(item.detailId);
+      });
+      return _details;
     }
   }
 };
