@@ -33,7 +33,7 @@
               <span>门诊医生</span>
             </template>
             <el-menu-item index="2-1">
-              <router-link to="/home/medicalRecord" tag="p">门诊病历</router-link>
+              <router-link to="/home/main" tag="p">门诊病历</router-link>
             </el-menu-item>
           </el-submenu>
           <el-submenu index="3">
