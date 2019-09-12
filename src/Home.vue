@@ -19,13 +19,13 @@
               <span>挂号收费</span>
             </template>
             <el-menu-item index="1-1">
-              <router-link to="/home/register" tag="span">挂号</router-link>
+              <router-link to="/home/register" tag="p">挂号</router-link>
             </el-menu-item>
             <el-menu-item index="1-2">
-              <router-link to="/home/withdraw" tag="span">退号</router-link>
+              <router-link to="/home/withdraw" tag="p">退号</router-link>
             </el-menu-item>
             <el-menu-item index="1-3">
-              <router-link to="/home/charge" tag="span">交费</router-link>
+              <router-link to="/home/charge" tag="p">交费</router-link>
             </el-menu-item>
           </el-submenu>
           <el-submenu index="2">
@@ -34,7 +34,7 @@
               <span>门诊医生</span>
             </template>
             <el-menu-item index="2-1">
-              <router-link to="/home/main" tag="span">门诊病历</router-link>
+              <router-link to="/home/main" tag="p">门诊病历</router-link>
             </el-menu-item>
           </el-submenu>
           <el-submenu index="3">
@@ -43,7 +43,7 @@
               <span>药房管理</span>
             </template>
             <el-menu-item index="3-1">
-              <router-link to="/home/dispense" tag="span">发药</router-link>
+              <router-link to="/home/dispense" tag="p">发药</router-link>
             </el-menu-item>
           </el-submenu>
           <el-submenu index="4">

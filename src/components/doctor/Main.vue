@@ -19,7 +19,7 @@
           </el-table>
         </el-card>
         <br />
-        <el-devider></el-devider>
+        <el-divider></el-divider>
         <el-card>
           <div slot="header" class="clearfix">
             <span>已诊患者</span>
