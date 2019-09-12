@@ -5,12 +5,13 @@
     </el-header>
 
     <el-container>
-      <el-aside width="200px">
+      <el-aside width="250px">
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
+          
         >
           <el-submenu index="1">
             <template slot="title">

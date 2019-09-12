@@ -18,19 +18,13 @@
             <el-table-column label="年龄" prop="year" width="50"></el-table-column>
           </el-table>
         </el-card>
-
+        <br />
+        <el-devider></el-devider>
         <el-card>
           <div slot="header" class="clearfix">
             <span>已诊患者</span>
           </div>
-          <el-table
-            ref="diagTable"
-            :data="diagnosed"
-            width="100%"
-            highlight-current-row
-            @current-change="handleCurrentChange"
-            disabled
-          >
+          <el-table ref="diagTable" :data="diagnosed" width="100%" height="250">
             <el-table-column label="病历号" prop="medicalRecordNumber" width="100"></el-table-column>
             <el-table-column label="姓名" prop="name" width="100"></el-table-column>
             <el-table-column label="年龄" prop="year" width="50"></el-table-column>
@@ -82,24 +76,28 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentRow = val;
+    },
+    getAllPatient() {
+      request({
+        url: "/patients",
+        method: "get",
+        params: {
+          doctorId: 1
+        }
+      }).then(res => {
+        this.registered = res.data.registered;
+        this.diagnosed = res.data.diagnosed;
+      });
     }
   },
   created() {
-    request({
-      url: "/patients",
-      method: "get",
-      params: {
-        doctorId: 1
-      }
-    }).then(res => {
-      this.registered = res.data.registered;
-      this.diagnosed = res.data.diagnosed;
-    });
+    this.getAllPatient();
   },
   watch: {
     currentRow: function(newVal, oldVal) {
-      sessionStorage.removeItem("register");
-      sessionStorage.setItem("register", JSON.stringify(newVal));
+      // sessionStorage.removeItem("register");
+      // sessionStorage.setItem("register", JSON.stringify(newVal));
+      this.resetSetItem("register", JSON.stringify(newVal));
     }
   }
 };
