@@ -1,5 +1,6 @@
 <template>
   <div>
+    <el-page-header @back="goHome" content="挂号" title="首页"></el-page-header>
     <el-row :gutter="10" type="flex">
       <el-col>
         发票号:
@@ -281,6 +282,11 @@ export default {
     },
     refresh() {
       this.reload();
+    },
+    goHome() {
+      this.$router.push({
+        path: "/home"
+      });
     }
   },
   created() {

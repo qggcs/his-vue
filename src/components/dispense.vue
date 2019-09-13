@@ -1,5 +1,7 @@
 <template>
   <div>
+    <el-page-header @back="goHome" content="门诊病历" title="首页"></el-page-header>
+
     <el-row>
       <h3>药品信息查询</h3>
     </el-row>
@@ -141,6 +143,11 @@ export default {
           type: "error"
         });
       }
+    },
+    goHome() {
+      this.$router.push({
+        path: "/home"
+      });
     }
   },
   computed: {

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <el-page-header @back="goHome" content="门诊病历" title="首页"></el-page-header>
     <el-container>
       <el-aside width="300px">
         <el-card>
@@ -94,6 +95,11 @@ export default {
       }).then(res => {
         this.registered = res.data.registered;
         this.diagnosed = res.data.diagnosed;
+      });
+    },
+    goHome() {
+      this.$router.push({
+        path: "/home"
       });
     }
   },
