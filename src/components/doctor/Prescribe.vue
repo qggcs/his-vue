@@ -18,7 +18,14 @@
     <el-row style="text-align:center" :gutter="10">
       <el-button type="text" icon="el-icon-circle-plus" class="btn-font" @click="openAddPre">增方</el-button>
       <el-button type="text" icon="el-icon-remove" class="btn-font">删方</el-button>
-      <el-button type="text" icon="el-icon-success" class="btn-font">开立</el-button>
+      <el-button type="text" icon="el-icon-success" class="btn-font" @click="openPre">开立</el-button>
+      <el-button
+        type="text"
+        icon="el-icon-circle-plus-outline"
+        class="btn-font"
+        @click="dialogVisible=true"
+      >增药</el-button>
+      <el-button type="text" icon="el-icon-remove-outline" class="btn-font">删药</el-button>
     </el-row>
     <el-row>
       <el-col :span="8">
@@ -57,16 +64,29 @@
       </el-col>
     </el-row>
 
-    <el-dialog title="增加处方" :visible.sync="dialogVisible" width="35%">
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addPre">确 定</el-button>
-      </span>
+    <el-dialog title="诊断信息" :visible.sync="dialogVisible" width="30%">
+      <template>
+        <el-transfer
+          v-model="medicines"
+          :props="{
+      key: 'medicineId',
+      label: 'medicineName'
+    }"
+          :data="details"
+        ></el-transfer>
+      </template>
+      <template>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="addMedicine">确 定</el-button>
+        </span>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { request } from "../../request";
 export default {
   data() {
     return {
@@ -75,7 +95,10 @@ export default {
       preDetails: [],
       indexOfPre: "",
       multipleSelection: [],
-      currentRow: null
+      currentRow: null,
+      dialogVisible: false,
+      medicines: [],
+      details: []
     };
   },
   methods: {
@@ -97,20 +120,46 @@ export default {
         cancelButtonText: "取消"
       }).then(({ value }) => {
         var pre = {
-          medicalRecordNumber: this.register.medicalRecordNumber,
           registerId: this.register.registerId,
-          doctorId: this.register.doctorId,
           name: value,
           details: []
         };
         this.precribes.push(pre);
       });
     },
+    addMedicine() {},
+    openPre() {
+      const pres = this.precribes.filter(item => {
+        var newPre = {
+          registerId: "",
+          name: "",
+          details: ""
+        };
+        newPre.registerId = item.registerId;
+        newPre.name = item.name;
+        newPre.details = item.details.join(",");
+
+        return newPre;
+      });
+
+      request({
+        url: "/prescribe",
+        method: "post",
+        data: pres
+      }).then(res => {
+        console.log(res.data);
+      });
+    }
   },
   created() {
     window.addEventListener("setItem", () => {
       this.register = JSON.parse(sessionStorage.getItem("register"));
     });
+  },
+  watch: {
+    currentRow: function(newVal) {
+      this.preDetails = newVal.details;
+    }
   }
 };
 </script>
