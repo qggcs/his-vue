@@ -4,8 +4,8 @@
       <el-col>
         发票号:
         <el-input style="width:150px" :disabled="true" v-model="invoiceNumber"></el-input>
-        <el-button type="primary" @click="addRegister">挂号</el-button>
-        <el-button type="primary">清空</el-button>
+        <el-button type="primary" @click="addRegister" icon="el-icon-check">挂号</el-button>
+        <el-button type="primary" icon="el-icon-refresh-left" @click="refresh">清空</el-button>
       </el-col>
     </el-row>
     <el-row>挂号信息</el-row>
@@ -142,6 +142,7 @@
 <script>
 import { request } from "../request.js";
 export default {
+  inject: ["reload"],
   data() {
     return {
       sexs: [{ value: 71, label: "男" }, { value: 72, label: "女" }],
@@ -247,6 +248,7 @@ export default {
       }).then(res => {
         var status = res.data.status;
         var msg = res.data.msg;
+        this.reload();
         this.msgOpen(status, msg);
       });
     },
@@ -276,6 +278,9 @@ export default {
       }).then(res => {
         this.usedNumber = res.data;
       });
+    },
+    refresh() {
+      this.reload();
     }
   },
   created() {

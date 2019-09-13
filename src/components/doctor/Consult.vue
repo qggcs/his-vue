@@ -75,7 +75,8 @@
     <el-dialog title="诊断信息" :visible.sync="dialogVisible" width="20%">
       <el-form>
         <el-form-item label="诊断疾病">
-          <el-select v-model="disease">
+          <el-select v-model="disease" value-key="diseaseId"
+          filterable>
             <el-option
               v-for="item in diseases"
               :key="item.diseaseId"
@@ -104,6 +105,7 @@
 <script>
 import { request } from "../../request";
 export default {
+  inject:['reload'],
   data() {
     return {
       register: "",
@@ -181,6 +183,7 @@ export default {
         method: "post",
         data: this.medicalRecord
       }).then(res => {
+        this.reload();
         this.msgOpen(res.data.status, res.data.msg);
       });
     },

@@ -7,7 +7,7 @@
       <el-col>
         病历号:
         <el-input style="width:150px" v-model="medicalRecordNumber" placeholder="请输入病历号"></el-input>
-        <el-button type="primary" @click="getChargeInfo">搜索</el-button>
+        <el-button type="primary" @click="getChargeInfo" icon="el-icon-search">搜索</el-button>
       </el-col>
     </el-row>
     <el-row>
@@ -52,7 +52,7 @@
     </el-row>
     <el-row>
       <div style="margin-top: 20px">
-        <el-button type="primary" @click="getInvoiceMoney">收费结算</el-button>
+        <el-button type="primary" @click="getInvoiceMoney" icon="el-icon-wallet">收费结算</el-button>
         <el-button @click="toggleSelection">取消选择</el-button>
       </div>
     </el-row>
@@ -113,6 +113,7 @@
 import { request } from "../request";
 import Axios from "axios";
 export default {
+  inject: ["reload"],
   data() {
     return {
       user: JSON.parse(sessionStorage.getItem("user")),
@@ -228,6 +229,7 @@ export default {
           details: this.details
         }
       }).then(res => {
+        this.reload();
         this.msgOpen(res.data.status, res.data.msg);
       });
     },

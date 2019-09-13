@@ -55,6 +55,7 @@
 <script>
 import { request } from "../request";
 export default {
+  inject: ["reload"],
   data() {
     return {
       medicalRecordNumber: "",
@@ -122,6 +123,7 @@ export default {
           details: this.details
         }
       }).then(res => {
+        this.reload();
         this.msgOpen(res.data.status, res.data.msg);
       });
     },

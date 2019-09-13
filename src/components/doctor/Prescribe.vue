@@ -23,7 +23,7 @@
         type="text"
         icon="el-icon-circle-plus-outline"
         class="btn-font"
-        @click="dialogVisible=true"
+        @click="openAddMed"
       >增药</el-button>
       <el-button type="text" icon="el-icon-remove-outline" class="btn-font">删药</el-button>
     </el-row>
@@ -51,29 +51,40 @@
           ref="detailTable"
           @selection-change="handleSelectionChange"
           :data="preDetails"
+          height="300px"
         >
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="medicineName" label="药品名称"></el-table-column>
           <el-table-column prop="specification" label="规格"></el-table-column>
           <el-table-column prop="medicineUnitPrice" label="单价"></el-table-column>
-          <el-table-column prop="useWay" label="用法"></el-table-column>
-          <el-table-column prop="cumsumption" label="用量"></el-table-column>
-          <el-table-column prop="frequency" label="频次"></el-table-column>
-          <el-table-column prop="count" label="数量"></el-table-column>
+          <el-table-column prop="unit" label="单位"></el-table-column>
+          <el-table-column prop="manufactor" label="制造商"></el-table-column>
+          <el-table-column prop="frequency" label="频次">
+            <p>一天两次</p>
+          </el-table-column>
+          <el-table-column label="数量">
+            <p>1</p>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>
 
-    <el-dialog title="诊断信息" :visible.sync="dialogVisible" width="30%">
+    <el-dialog title="添加药品" :visible.sync="dialogVisible" width="30%">
       <template>
-        <el-transfer
-          v-model="medicines"
-          :props="{
-      key: 'medicineId',
-      label: 'medicineName'
-    }"
-          :data="details"
-        ></el-transfer>
+        <el-select
+          v-model="details"
+          multiple
+          value-key="medicineId"
+          filterable
+          placeholder="输入药品名称进行搜索"
+        >
+          <el-option
+            v-for="item in medicines"
+            :key="item.medicineId"
+            :label="item.medicineName"
+            :value="item"
+          ></el-option>
+        </el-select>
       </template>
       <template>
         <span slot="footer" class="dialog-footer">
@@ -88,6 +99,7 @@
 <script>
 import { request } from "../../request";
 export default {
+  inject: ["reload"],
   data() {
     return {
       register: "",
@@ -127,19 +139,26 @@ export default {
         this.precribes.push(pre);
       });
     },
-    addMedicine() {},
+    addMedicine() {
+      this.currentRow.details = this.currentRow.details.concat(this.details);
+      this.preDetails = this.currentRow.details;
+      this.details = [];
+      this.dialogVisible = false;
+    },
     openPre() {
-      const pres = this.precribes.filter(item => {
+      const pres = [];
+      this.precribes.forEach(item => {
         var newPre = {
           registerId: "",
           name: "",
-          details: ""
+          details: []
         };
         newPre.registerId = item.registerId;
         newPre.name = item.name;
-        newPre.details = item.details.join(",");
+        newPre.details = this.convertor(item.details).join(",");
+        console.log(newPre.details);
 
-        return newPre;
+        pres.push(newPre);
       });
 
       request({
@@ -147,11 +166,51 @@ export default {
         method: "post",
         data: pres
       }).then(res => {
-        console.log(res.data);
+        this.reload();
+        this.msgOpen(res.data.status, res.data.msg);
       });
+    },
+    msgOpen(status, msg) {
+      if (status == 200) {
+        this.$message({
+          showClose: true,
+          message: msg,
+          type: "success"
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          message: msg,
+          type: "error"
+        });
+      }
+    },
+    convertor(tmp) {
+      var details = [];
+      tmp.forEach(item => {
+        details.push(item.medicineId);
+      });
+
+      return details;
+    },
+    getAllMedicines() {
+      request({
+        url: "/medicines",
+        method: "post"
+      }).then(res => {
+        this.medicines = res.data;
+      });
+    },
+    openAddMed() {
+      if (this.currentRow == null) {
+        this.$message.error("请选择处方后再操作!");
+        return;
+      }
+      this.dialogVisible = true;
     }
   },
   created() {
+    this.getAllMedicines();
     window.addEventListener("setItem", () => {
       this.register = JSON.parse(sessionStorage.getItem("register"));
     });

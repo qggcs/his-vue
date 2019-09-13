@@ -1,7 +1,7 @@
 <template>
   <el-container class="home-container">
     <el-header style="padding: 0px;display:flex;justify-content:space-between;align-items: center">
-      <span>东软云医院</span>
+      <span class="home_title">东软云医院</span>
     </el-header>
 
     <el-container>
@@ -11,7 +11,6 @@
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
-          
         >
           <el-submenu index="1">
             <template slot="title">
@@ -105,5 +104,11 @@ export default {
   background-color: #e9eef3;
   color: #333;
   line-height: 10%;
+}
+.home_title {
+  color: #fff;
+  font-size: 22px;
+  display: inline;
+  margin-left: 8px;
 }
 </style>

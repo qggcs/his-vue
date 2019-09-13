@@ -7,7 +7,7 @@
       <el-col>
         病历号:
         <el-input style="width:150px" v-model="medicalRecordNumber" placeholder="请输入病历号"></el-input>
-        <el-button type="primary" @click="getAllInfo">搜索</el-button>
+        <el-button type="primary" @click="getAllInfo" icon="el-icon-search">搜索</el-button>
       </el-col>
     </el-row>
     <el-row>
@@ -41,7 +41,7 @@
         <el-table-column prop="status" label="看诊状态" width="180"></el-table-column>
         <el-table-column prop="status" label="操作" width="180">
           <template slot-scope="scope">
-            <el-button size="mini" type="danger" @click="withdraw(scope.row)">删除</el-button>
+            <el-button size="mini" type="danger" @click="withdraw(scope.row)">退号</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,6 +52,7 @@
 <script>
 import { request } from "../request";
 export default {
+  inject: ["reload"],
   data() {
     return {
       medicalRecordNumber: "",
@@ -74,10 +75,19 @@ export default {
         console.log(res.data);
         this.infos = res.data.infos;
         this.department = res.data.department;
+        var arr = res.data.infos;
+        if (arr.lengtg != 0) {
+          this.name = arr[0].name;
+          this.id = arr[0].id;
+          this.address = arr[0].address;
+        }
       });
     },
     withdraw(row) {
-      console.log(row.registerId);
+      if (row.status === "已退号") {
+        this.msgOpen(500, "不能二次退号!");
+        return;
+      }
       request({
         url: "/withdraw",
         method: "get",
@@ -85,6 +95,7 @@ export default {
           registerId: row.registerId
         }
       }).then(res => {
+        this.reload();
         this.msgOpen(res.data.status, res.data.msg);
       });
     },
