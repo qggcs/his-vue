@@ -2,6 +2,10 @@
   <el-container class="home-container">
     <el-header style="padding: 0px;display:flex;justify-content:space-between;align-items: center">
       <span class="home_title">东软云医院</span>
+      <div class="userface">
+        <span>{{user.name}}</span>&nbsp;
+        <i class="el-icon-user-solid user-img"></i>
+      </div>
     </el-header>
 
     <el-container>
@@ -65,7 +69,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      user: {}
+    };
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -74,6 +80,9 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     }
+  },
+  created() {
+    this.user = JSON.parse(sessionStorage.getItem("user"));
   }
 };
 </script>
@@ -111,5 +120,16 @@ export default {
   font-size: 22px;
   display: inline;
   margin-left: 8px;
+}
+.userface {
+  float: right;
+  font-size: 21px;
+  margin-right: 10px;
+}
+.user-img {
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  border-radius: 100px;
 }
 </style>
