@@ -3,7 +3,7 @@
     <el-page-header @back="goHome" content="门诊病历" title="首页"></el-page-header>
     <el-container>
       <el-aside width="300px">
-        <el-card>
+        <el-card style="height:50%">
           <div slot="header" class="clearfix">
             <span>未诊患者</span>
           </div>
@@ -19,9 +19,7 @@
             <el-table-column label="年龄" prop="year" width="50"></el-table-column>
           </el-table>
         </el-card>
-        <br />
-        <el-divider></el-divider>
-        <el-card>
+        <el-card style="height:49%">
           <div slot="header" class="clearfix">
             <span>已诊患者</span>
           </div>

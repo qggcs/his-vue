@@ -68,6 +68,61 @@
         </el-table>
       </el-col>
     </el-row>
+    <el-row>
+      <el-tabs type="card" class="tabs" v-model="activeName">
+        <el-tab-pane label="处方模板" name="first">
+          <el-row>
+            <el-col :span="10">
+              <el-card style="height:400px;width:500px">
+                <div slot="header">
+                  关键字:
+                  <el-input v-model="key" placeholder="请输入查询关键字" style="width:380px"></el-input>
+                </div>
+                <el-table
+                  :data="tmp"
+                  ref="tmpTable"
+                  highlight-current-row
+                  height="300px"
+                  @current-change="getTemplate"
+                >
+                  <el-table-column prop="name" label="模板名称"></el-table-column>
+                  <el-table-column prop="scope" label="范围"></el-table-column>
+                </el-table>
+              </el-card>
+            </el-col>
+            <el-col :span="8">
+              <el-card style="height:350px;width:750px">
+                <div slot="header">
+                  <span>模板明细</span>
+                  <el-button
+                    style="float: right; padding: 15px 3px"
+                    type="text"
+                    @click="addPreByTmp"
+                  >使用该模板</el-button>
+                </div>
+                <el-table :data="tmpDetails" ref="tmpDetailTable" height="300px">
+                  <el-table-column prop="medicineName" label="药品名称"></el-table-column>
+                  <el-table-column prop="specification" label="规格"></el-table-column>
+                  <el-table-column prop="unit" label="单位"></el-table-column>
+                  <el-table-column prop="useWay" label="用法"></el-table-column>
+                  <el-table-column prop="comsumption" label="用量"></el-table-column>
+                  <el-table-column prop="frequency" label="频次"></el-table-column>
+                </el-table>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+        <el-tab-pane label="常用药品" name="second">
+          <center>常用药品</center>
+        </el-tab-pane>
+        <el-tab-pane label="建议方案" name="third">
+          <center>建议方案</center>
+        </el-tab-pane>
+        <el-tab-pane label="历史处方" name="fourth">
+          <center>历史处方</center>
+        </el-tab-pane>
+      </el-tabs>
+    </el-row>
 
     <el-dialog title="添加药品" :visible.sync="dialogVisible" width="30%">
       <template>
@@ -110,7 +165,13 @@ export default {
       currentRow: null,
       dialogVisible: false,
       medicines: [],
-      details: []
+      details: [],
+      key: "",
+      activeName: "first",
+      templates: [],
+      template: {},
+      tmp: [],
+      tmpDetails: []
     };
   },
   methods: {
@@ -207,10 +268,32 @@ export default {
         return;
       }
       this.dialogVisible = true;
+    },
+    getTemplate(val) {
+      this.template = val;
+    },
+    getAllTemplates() {
+      request({
+        url: "/tmps",
+        method: "get"
+      }).then(res => {
+        this.templates = res.data;
+        this.tmp = JSON.parse(JSON.stringify(res.data));
+      });
+    },
+    addPreByTmp() {
+      var preByTmp = {
+        registerId: this.register.registerId,
+        name: this.template.name,
+        details: this.tmpDetails
+      };
+
+      this.precribes.push(preByTmp);
     }
   },
   created() {
     this.getAllMedicines();
+    this.getAllTemplates();
     window.addEventListener("setItem", () => {
       this.register = JSON.parse(sessionStorage.getItem("register"));
     });
@@ -218,6 +301,28 @@ export default {
   watch: {
     currentRow: function(newVal) {
       this.preDetails = newVal.details;
+    },
+    template: function(newVal) {
+      request({
+        url: "/detail",
+        method: "get",
+        params: {
+          templateId: newVal.templateId
+        }
+      }).then(res => {
+        this.tmpDetails = res.data;
+      });
+    },
+    key: function(newVal) {
+      if (newVal === "") {
+        this.tmp = JSON.parse(JSON.stringify(this.templates));
+      } else {
+        this.tmp = this.templates.filter(item => {
+          if (item.name.includes(newVal)) {
+            return item;
+          }
+        });
+      }
     }
   }
 };
