@@ -48,7 +48,7 @@ export default {
           sessionStorage.setItem("online", true);
           this.msgOpen(200, data.msg);
           this.$router.push({
-            path: "/home/register"
+            path: "/home"
           });
         }
       });

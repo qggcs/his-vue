@@ -9,6 +9,7 @@ import Charge from './components/charge.vue'
 import Dispense from './components/dispense.vue'
 import Login from './Login.vue'
 import Home from './Home.vue'
+import Default from './Default.vue'
 
 Vue.use(Router)
 
@@ -80,5 +81,9 @@ export default new Router({
                 }
             ]
         }]
+    }, {
+        path: '*',
+        component: Default,
+        name: '默认'
     }]
 })

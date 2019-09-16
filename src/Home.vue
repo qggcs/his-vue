@@ -2,10 +2,17 @@
   <el-container class="home-container">
     <el-header style="padding: 0px;display:flex;justify-content:space-between;align-items: center">
       <span class="home_title">东软云医院</span>
-      <div class="userface">
-        <span>{{user.name}}</span>&nbsp;
-        <i class="el-icon-user-solid user-img"></i>
-      </div>
+      <el-dropdown class="el-dropdown-link" @command="handleCommand">
+        <div class="userface">
+          <span slot="title">{{user.name}}</span>&nbsp;
+          <i class="el-icon-user"></i>
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>个人中心</el-dropdown-item>
+          <el-dropdown-item>设置</el-dropdown-item>
+          <el-dropdown-item command="logout" divided>注销</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </el-header>
 
     <el-container>
@@ -22,40 +29,69 @@
               <i class="el-icon-location"></i>
               <span>挂号收费</span>
             </template>
-            <el-menu-item index="1-1">
-              <router-link to="/home/register" tag="p">挂号</router-link>
-            </el-menu-item>
-            <el-menu-item index="1-2">
-              <router-link to="/home/withdraw" tag="p">退号</router-link>
-            </el-menu-item>
-            <el-menu-item index="1-3">
-              <router-link to="/home/charge" tag="p">交费</router-link>
-            </el-menu-item>
+
+            <div :hidden="!authority.register">
+              <el-menu-item index="1-1">
+                <router-link to="/home/register" tag="span">*挂号</router-link>
+              </el-menu-item>
+              <el-menu-item index="1-2">
+                <router-link to="/home/withdraw" tag="span">*退号</router-link>
+              </el-menu-item>
+              <el-menu-item index="1-3">
+                <router-link to="/home/charge" tag="span">*交费</router-link>
+              </el-menu-item>
+              <el-menu-item index="1-4">
+                <router-link to="**" tag="span">退费</router-link>
+              </el-menu-item>
+              <el-menu-item index="1-5">
+                <router-link to="**" tag="span">发票补打</router-link>
+              </el-menu-item>
+              <el-menu-item index="1-6">
+                <router-link to="**" tag="span">发票重打</router-link>
+              </el-menu-item>
+              <el-menu-item index="1-7">
+                <router-link to="**" tag="span">患者费用查询</router-link>
+              </el-menu-item>
+            </div>
           </el-submenu>
+
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>门诊医生</span>
             </template>
-            <el-menu-item index="2-1">
-              <router-link to="/home/main" tag="p">门诊病历</router-link>
-            </el-menu-item>
+            <div :hidden="!authority.consult">
+              <el-menu-item index="2-1">
+                <router-link to="/home/main" tag="p">*门诊病历</router-link>
+              </el-menu-item>
+              <el-menu-item index="3-2">医技模板管理</el-menu-item>
+              <el-menu-item index="3-3">西药处方模板</el-menu-item>
+              <el-menu-item index="3-4">中药处方模板</el-menu-item>
+            </div>
           </el-submenu>
           <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-document"></i>
               <span>药房管理</span>
             </template>
-            <el-menu-item index="3-1">
-              <router-link to="/home/dispense" tag="p">发药</router-link>
-            </el-menu-item>
+            <div :hidden="!authority.dispense">
+              <el-menu-item index="3-1">
+                <router-link to="/home/dispense" tag="p">*药房发药</router-link>
+              </el-menu-item>
+              <el-menu-item index="3-2">药房退药</el-menu-item>
+              <el-menu-item index="3-3">药品管理</el-menu-item>
+            </div>
           </el-submenu>
           <el-submenu index="4">
             <template slot="title">
               <i class="el-icon-setting"></i>
               <span>系统管理</span>
             </template>
-            <el-menu-item index="4-1"></el-menu-item>
+            <div :hidden="!authority.system">
+              <el-menu-item index="4-1">用户管理</el-menu-item>
+              <el-menu-item index="4-2">科室管理</el-menu-item>
+              <el-menu-item index="4-3">医生排班管理</el-menu-item>
+            </div>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -67,10 +103,18 @@
 </template>
 
 <script>
+import { request } from "./request";
 export default {
+  inject: ["reload"],
   data() {
     return {
-      user: {}
+      user: { userType: "" },
+      authority: {
+        register: false,
+        consult: false,
+        dispense: false,
+        system: false
+      }
     };
   },
   methods: {
@@ -79,10 +123,58 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    getAuthority() {
+      request({
+        url: "/role",
+        method: "get",
+        params: {
+          userType: this.user.userType
+        }
+      }).then(res => {
+        this.authority = res.data;
+      });
+    },
+    handleCommand(cmd) {
+      if (cmd == "logout") {
+        this.$confirm("注销登录, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            this.$router.replace({ path: "/" });
+            sessionStorage.removeItem("user");
+            sessionStorage.removeItem("online");
+            this.msgOpen(200, "注销成功！");
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "取消"
+            });
+          });
+      }
+    },
+    msgOpen(status, msg) {
+      if (status == 200) {
+        this.$message({
+          showClose: true,
+          message: msg,
+          type: "success"
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          message: msg,
+          type: "error"
+        });
+      }
     }
   },
   created() {
     this.user = JSON.parse(sessionStorage.getItem("user"));
+    this.getAuthority();
   }
 };
 </script>
@@ -123,13 +215,18 @@ export default {
 }
 .userface {
   float: right;
-  font-size: 21px;
+  font: bold;
+  font-size: 18px;
   margin-right: 10px;
 }
 .user-img {
   width: 30px;
   height: 30px;
-  background: #fff;
+
   border-radius: 100px;
+}
+.el-dropdown-link {
+  cursor: pointer;
+  display: inline;
 }
 </style>
