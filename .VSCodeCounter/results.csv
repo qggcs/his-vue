@@ -1,0 +1,17 @@
+filename, language, Vue, JavaScript, comment, blank, total
+App.vue, Vue, 30, 0, 0, 1, 31
+Default.vue, Vue, 30, 0, 0, 2, 32
+Home.vue, Vue, 225, 0, 0, 7, 232
+Login.vue, Vue, 92, 0, 0, 2, 94
+components\charge.vue, Vue, 265, 0, 0, 3, 268
+components\dispense.vue, Vue, 167, 0, 0, 2, 169
+components\doctor\Consult.vue, Vue, 211, 0, 0, 4, 215
+components\doctor\Main.vue, Vue, 114, 0, 2, 1, 117
+components\doctor\Prescribe.vue, Vue, 329, 0, 0, 6, 335
+components\register.vue, Vue, 336, 0, 1, 4, 341
+components\withdraw.vue, Vue, 129, 0, 0, 1, 130
+main.js, JavaScript, 0, 55, 3, 10, 68
+request.js, JavaScript, 0, 7, 1, 4, 12
+router.js, JavaScript, 0, 87, 0, 2, 89
+store.js, JavaScript, 0, 11, 0, 6, 17
+Total, -, 1928, 160, 7, 55, 2150
