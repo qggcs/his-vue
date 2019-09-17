@@ -88,7 +88,7 @@ export default {
         url: "/patients",
         method: "get",
         params: {
-          doctorId: 1
+          doctorId: this.doctor.userId
         }
       }).then(res => {
         this.registered = res.data.registered;

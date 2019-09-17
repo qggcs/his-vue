@@ -143,10 +143,16 @@ export default {
           type: "warning"
         })
           .then(() => {
-            this.$router.replace({ path: "/" });
+            // this.$router.go(0);
+            // this.$router.replace({ path: "/home/register" });
             sessionStorage.removeItem("user");
             sessionStorage.removeItem("online");
-            this.msgOpen(200, "注销成功！");
+            this.$alert("注销成功!", "操作成功", {
+              confirmButtonText: "确定",
+              callback: action => {
+                this.$router.replace({ path: "/home/register" });
+              }
+            });
           })
           .catch(() => {
             this.$message({
